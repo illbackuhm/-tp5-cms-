@@ -1,0 +1,43 @@
+{include file="public/head" /}
+<div style="overflow:hidden;">
+    <table class="table table-bordered" style='table-layout:fixed;'>
+        <caption><button type="button" class="btn btn-primary a" url="{:url('link_add')}">新增友情链接</button></caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>友情链接名称</th>
+            <th>URL</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='data' id='vol'}
+        <tr>
+            <td>{$vol.id}</td>
+            <td>{$vol.name}</td>
+            <td>{$vol.url}</td>
+            <td>
+                <button type="button" class="btn btn-primary a" url="{:url('link_edit',['id'=>$vol['id']])}">修改</button>
+                <button type="button" class="btn btn-danger del" val="{$vol.id}">删除</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div style="text-align: center"></div>
+</div>
+{include file="public/foot" /}
+<script>
+    $('.del').click(function(){
+        var id=$(this).attr('val');
+        layer.confirm('确定删除该友情链接吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post("{:url('link_del')}",{id:id},function(re){
+                layer.msg(re.msg,{time:2000},function(){
+                    if(re.code=='0') location.reload();
+                });
+            });
+        });
+    })
+</script>

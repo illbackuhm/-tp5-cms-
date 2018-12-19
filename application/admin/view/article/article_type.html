@@ -1,0 +1,43 @@
+{include file="public/head" /}
+<div style="overflow:hidden;">
+    <table class="table table-bordered" style='table-layout:fixed;'>
+        <caption><button type="button" class="btn btn-primary a" url="{:url('type_add')}">新增分类</button></caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>分类名</th>
+            <th>URL</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='data' id='vol'}
+        <tr>
+            <td>{$vol.id}</td>
+            <td>{$vol.title}</td>
+            <td>{$vol.url}</td>
+            <td>
+                <button type="button" class="btn btn-primary a" url="{:url('type_edit',['id'=>$vol['id']])}">修改</button>
+                <button type="button" class="btn btn-danger del" val="{$vol.id}">删除</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div style="text-align: center"></div>
+</div>
+{include file="public/foot" /}
+<script>
+    $('.del').click(function(){
+        var id=$(this).attr('val');
+        layer.confirm('确定删除该分类吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post("{:url('type_del')}",{id:id},function(re){
+                layer.msg(re.msg,{time:2000},function(){
+                    if(re.code=='0') location.reload();
+                });
+            });
+        });
+    })
+</script>

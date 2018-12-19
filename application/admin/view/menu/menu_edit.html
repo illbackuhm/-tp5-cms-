@@ -1,0 +1,85 @@
+{include file="public/head" /}
+<style>
+    .main_box{
+      width:80%;height: auto;margin: 0 auto;border-radius: 2px;
+    }
+    .form-control,.main_box input[type='text'] {
+        width: 20em;
+    }
+    .checkbox-inline + .checkbox-inline{
+        margin-left: 0px;!important;
+    }
+    .form-group{
+        margin-top: 5em;
+    }
+</style>
+        <div class="main_box">
+            <form class="form-horizontal">
+                <input name="id" value="{$data.id}" type="hidden">
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">节点名称 *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="title" value="{$data.title}" placeholder="节点名称（必填）">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">节点URL *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="name" value="{$data.name}" placeholder="请输人节点URL（必填）">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">是否加入菜单 *</label>
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="radio" name="menu"  value="1" {$data['menu']=='1'?'checked':''}>是
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="menu"  value="2" {$data['menu']=='2'?'checked':''}> 否
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">节点分组 *</label>
+                    <div class="col-sm-10">
+                        {if condition="$data['pid']=='0'"}
+                        <input name="pid" value="{$data.pid}" type="hidden">
+                        <select  class="form-control" disabled>
+                            <option value="0" >顶级菜单</option>
+                        </select>
+                        <div class="alert alert-warning" style="width: 20em">
+                            <strong>提示！</strong>顶级菜单不支持修改分组
+                        </div>
+                        {else/}
+                        <select name="pid" class="form-control">
+                            <option value="0" {$data['pid']=='0'?'selected':''}>顶级菜单</option>
+                            {volist name='list' id='vo'}
+                            <option value="{$vo.id}" {$data['pid']==$vo['id']?'selected':''} >{$vo.title}</option>
+                            {/volist}
+                        </select>
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-default">确认修改</button>
+                        <button type="button" class="btn btn-primary" onclick="window.history.back('-1')">返回</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+{include file="public/foot" /}
+<script>
+
+    $('.btn-default').click(function(){
+        if($("input[name='title']").val()=='' || $("input[name='name']").val()==''){
+            layer.msg('请检查必填项');
+            return;
+        }
+        $.post("{:url('menu_edit')}",$('.form-horizontal').serialize(),function(re){
+            layer.msg(re.msg,{time:2000},function(){
+                if(re.code=='0') window.history.back(-1);
+            });
+        });
+    })
+</script>

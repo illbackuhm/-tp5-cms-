@@ -1,0 +1,89 @@
+</div>
+<!--end-main-container-part-->
+<script src="ADMIN/js/jquery.min.js"></script>
+<script src="ADMIN/js/bootstrap.min.js"></script>
+<script src="ADMIN/layer/layer.js"></script>
+<script src="ADMIN/js/matrix.js"></script>
+<script type="text/javascript">
+    //初始化相关元素高度
+    function init(){
+        $("body").height($(window).height()-80);
+        $("#iframe-main").height($(window).height()-90);
+        $("#sidebar").height($(window).height()-50);
+    }
+
+    $(function(){
+        init();
+        $(window).resize(function(){
+            init();
+        });
+    });
+
+    //点击按钮跳转到指定页面,特殊class为 a
+    $('.a').click(function(){
+        var url=$(this).attr('url');
+        location.href=url;
+    })
+
+    function modal_sub(modal,url){
+        $.post(url,$('#'+modal+" form").serialize(),function(re){
+            layer.msg(re.msg,{time:2000},function(){
+                if(re.code=='0'){
+                    location.reload();
+                }
+            });
+        })
+    }
+
+    //个人资料修改
+    $('.sub_up_own').click(function(){
+        var name=$('#name_own').val(),pwd=$('#pwd_own').val(),r_pwd=$('#r_pwd_own').val();
+        if(name==''){
+            layer.msg('账号不能为空');
+            return;
+        }
+        if(pwd!=='' && pwd!==r_pwd){
+            layer.msg('密码不一致');
+            return;
+        }
+        $.post("{:url('Admin/up_own')}",$('#up_own form').serialize(),function(re){
+            layer.msg(re.msg,{time:2000},function(){
+                if(re.code=='0'){
+                    location.reload();
+                }
+            });
+        })
+    })
+
+    $('.index').click(function(){
+        location.href="{:url('admin/index/index')}";
+    })
+
+    active_menu();
+    //菜单-当前菜单
+    function active_menu(){
+        var now_path="{$now_path}";
+        $('.nav_son').each(function(k,v){
+           var url=$(v).attr('url').toLowerCase();
+           if(now_path==url){
+               var pid=$(v).attr('pid');
+               $('.submenu').removeClass('active');
+               $('.nav_'+pid).addClass('open active');
+               $(v).css('background','#5cb85c');
+           }
+        })
+    }
+
+    //清理前台缓存
+    $('#clean').click(function(){
+        layer.confirm('确认清除前台缓存？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            $.get("{:url('Index/clean')}",function(re){
+                layer.msg(re.msg);
+            })
+        });
+    })
+</script>
+</body>
+</html>

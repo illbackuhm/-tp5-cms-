@@ -1,0 +1,101 @@
+{include file="public/head" /}
+<style>
+    .main_box{
+      width:80%;height: auto;margin: 0 auto;border-radius: 2px;
+    }
+    .main_box input[type='text']{
+        width: 20em;
+    }
+    .checkbox-inline + .checkbox-inline{
+        margin-left: 0px;!important;
+    }
+    .form-group{
+        margin-top: 5em;
+    }
+</style>
+        <div class="main_box">
+            <form class="form-horizontal">
+                <input name="rules" id="rules" type="hidden">
+                <input name="id" value="{$rule_info.id}" type="hidden">
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">角色名称 *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="title" value="{$rule_info.title}" placeholder="请输入角色名称（必填）">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">备注</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="remarks" value="{$rule_info.remarks}" placeholder="请输入备注">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label">权限 *</label>
+                    <div class="col-sm-10">
+                        {volist name="list" id="vo"}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" class="main" id="first_{$vo.id}" value="{$vo.id}" {php}echo in_array($vo['id'],$rule_data)?'checked':'';{/php} >{$vo.title}</label>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                {volist name="vo['_child']" id='vol'}
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" class="son first_{$vo.id}" k="{$vo.id}" value="{$vol.id}" {php}echo in_array($vol['id'],$rule_data)?'checked':'';{/php}>{$vol.title}
+                                </label>
+                                {/volist}
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-default">确认修改</button>
+                        <button type="button" class="btn btn-primary" onclick="window.history.back('-1')">返回</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+{include file="public/foot" /}
+<script>
+    $('.main').bind('click',function(){
+        var k=$(this).val();
+        if($("#first_"+k).prop('checked')){
+            $(".first_"+k).prop('checked',true);
+        }else{
+            $(".first_"+k).prop('checked',false);
+        }
+    })
+    $(".son").bind('click',function(){
+        var k=$(this).attr('k');
+        if($(this).prop('checked')){
+            $("#first_"+k).prop('checked',true);
+        }
+    })
+
+    $('.btn-default').click(function(){
+        var id_str='';
+        $("input[type='checkbox']").each(function(k,v){
+            if($(v).prop('checked')){
+                id_str+=$(v).val()+',';
+            }
+        })
+        id_str=id_str.substring(0,id_str.length-1);
+        if(id_str.length=='0'){
+            layer.msg('未勾选权限');
+            return;
+        }
+        $('#rules').val(id_str);
+        if($("input[name='title']").val()==''){
+            layer.msg('请检查必填项');
+            return;
+        }
+        $.post("{:url('role_edit')}",$('.form-horizontal').serialize(),function(re){
+            layer.msg(re.msg,{time:2000},function(){
+                if(re.code=='0') window.history.back(-1);
+            });
+        });
+    })
+</script>

@@ -1,0 +1,82 @@
+{include file="public/head" /}
+        <table class="table table-bordered">
+            <caption>服务器信息</caption>
+            <tbody>
+            <tr>
+                <td>北京时间</td>
+                <td id="bj_time">{$server.bj_time}</td>
+            </tr>
+            <tr>
+                <td>服务器IP</td>
+                <td>{$server.server_ip}</td>
+            </tr>
+            <tr>
+                <td>服务器解译引擎</td>
+                <td>{$server.software}</td>
+            </tr>
+            <tr>
+                <td>Mysql版本</td>
+                <td>{$server.mysql_version}</td>
+            </tr>
+            <tr>
+                <td>web服务端口</td>
+                <td>{$server.port}</td>
+            </tr>
+            <tr>
+                <td>服务器管理员</td>
+                <td>{$server.admin}</td>
+            </tr>
+            <tr>
+                <td>域名</td>
+                <td>{$server.url_path}</td>
+            </tr>
+            <tr>
+                <td>可用空间</td>
+                <td>{$server.diskfree}</td>
+            </tr>
+            <tr>
+                <td>当前设置时区</td>
+                <td>{$server.timezone}</td>
+            </tr>
+            </tbody>
+        </table>
+{include file="public/foot" /}
+<script>
+
+    function addZero(i){
+        if (i<10) {
+            i="0" + i;
+        }
+        return i;
+    }
+
+    setInterval(function() {
+        ajax()
+        function ajax(option) {
+            var xhr = null;
+            if (window.XMLHttpRequest) {
+                xhr = new window.XMLHttpRequest();
+            } else { // ie
+                xhr =new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            // 监听请求状态变化
+            xhr.onreadystatechange = function() {
+                var time = null, curDate = null;
+                if (xhr.readyState === 2) {
+                    // 获取响应头里的时间戳
+                    time = xhr.getResponseHeader("Date");
+                    curDate = new Date(time);
+                    document.getElementById("bj_time").innerHTML = curDate.getFullYear() + "年"
+                            + (curDate.getMonth() + 1) + "月"
+                            + curDate.getDate() + "日 "
+                            + addZero(curDate.getHours()) + ":"
+                            + addZero(curDate.getMinutes()) + ":"
+                            + addZero(curDate.getSeconds());
+                }
+            }
+            xhr.open("GET",'');
+            xhr.send(null);
+        }
+    }, 1000);
+</script>
+</script>

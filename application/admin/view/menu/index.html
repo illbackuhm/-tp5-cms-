@@ -1,0 +1,56 @@
+{include file="public/head" /}
+<div style="overflow:hidden;">
+    <table class="table table-bordered" style='table-layout:fixed;'>
+        <caption><button type="button" class="btn btn-primary a" url="{:url('menu_add')}">添加节点</button></caption>
+        <caption style="text-align: center">
+            <form class="form-inline" role="form" action="">
+                <div class="form-group">
+                    <label class="sr-only" >名称</label>
+                    <input type="text" class="form-control" name="title" value="{$search['title']}" placeholder="请输入节点名称">
+                </div>
+                <input type="submit" class="btn btn-success" value="搜索">
+            </form>
+        </caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>节点名</th>
+            <th>节点URL</th>
+            <th>所属分组</th>
+            <th>是否是菜单</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='data' id='vol'}
+        <tr>
+            <td>{$vol.id}</td>
+            <td>{$vol.title}</td>
+            <td>{$vol.name}</td>
+            <td>{$vol.group}</td>
+            <td>{$vol.menu_zh}</td>
+            <td>
+                <button type="button" class="btn btn-primary a" url="{:url('menu_edit',['id'=>$vol['id']])}">修改</button>
+                <button type="button" class="btn btn-danger del" val="{$vol.id}">删除</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div style="text-align: center">{$page}</div>
+</div>
+{include file="public/foot" /}
+<script>
+    $('.del').click(function(){
+        var id=$(this).attr('val');
+        layer.confirm('确定删除该节点吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post("{:url('menu_del')}",{id:id},function(re){
+                layer.msg(re.msg,{time:2000},function(){
+                    if(re.code=='0') location.reload();
+                });
+            });
+        });
+    })
+</script>

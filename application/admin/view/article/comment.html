@@ -1,0 +1,60 @@
+{include file="public/head" /}
+<div style="overflow:hidden;">
+    <table class="table table-bordered" style='table-layout:fixed;'>
+        <caption><button type="button" class="btn btn-primary a" url="{:url('type_add')}">新增分类</button></caption>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>用户昵称</th>
+            <th>来源地</th>
+            <th>评论时间</th>
+            <th>是否显示</th>
+            <th width="300">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='data' id='vol'}
+        <tr>
+            <td>{$vol.id}</td>
+            <td>{$vol.replyName}</td>
+            <td>{$vol.address}</td>
+            <td>{$vol.time}</td>
+            <td>{if condition="$vol['is_show']==1"}<span class="label label-success">{else /}<span class="label label-danger">{/if}{$vol.is_show==1?'显示':'不显示'}</span></td>
+            <td>
+                <button type="button" class="btn btn-primary up" is_show="{$vol.is_show==1?'0':'1'}" id="{$vol.id}">修改状态</button>
+                <button type="button" class="btn label-info a" url="{:url('comment_info',['id'=>$vol['id']])}" style="color: #fff">查看详情</button>
+                <button type="button" class="btn btn-danger del" val="{$vol.id}">删除</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+    <div style="text-align: center"></div>
+</div>
+{include file="public/foot" /}
+<script>
+    $('.del').click(function(){
+        var id=$(this).attr('val');
+        layer.confirm('确定删除该评论吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post("{:url('comment_del')}",{id:id},function(re){
+                layer.msg(re.msg,{time:2000},function(){
+                    if(re.code=='0') location.reload();
+                });
+            });
+        });
+    });
+    $('.up').click(function(){
+        var id=$(this).attr('id'),is_show=$(this).attr('is_show');
+        layer.confirm('确定修改ID为'+id+'评论的状态吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.post("{:url('chan_comment')}",{id:id,is_show:is_show},function(re){
+                layer.msg(re.msg,{time:2000},function(){
+                    if(re.code=='0') location.reload();
+                });
+            });
+        });
+    })
+</script>

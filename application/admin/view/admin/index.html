@@ -1,0 +1,55 @@
+{include file="public/head" /}
+        <table class="table table-bordered" style='table-layout:fixed;'>
+            <caption><button type="button" class="btn btn-primary a" url="{:url('admin_add')}">添加管理员</button></caption>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>账号</th>
+                <th>角色</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name='data' id='vol'}
+            <tr>
+                <td>{$vol.user_id}</td>
+                <td>{$vol.name}</td>
+                <td>{$vol.title}</td>
+                <td>
+                    {eq name="vol['type']" value="1"}
+                    <span class="label label-success">
+                    {else/}
+                    <span class="label label-danger">
+                    {/eq}
+                     {$vol.type_zh}</span>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary a" url="{:url('admin_edit',['user_id'=>$vol['user_id']])}"  >修改</button>
+                    {eq name="vol['type']" value="1"}
+                    <button type="button" val="2" uid="{$vol.user_id}" class="btn btn-warning chan_type">
+                        禁用
+                    {else/}
+                        <button type="button" val="1" uid="{$vol.user_id}" class="btn btn-success chan_type">
+                        启用
+                    {/eq}
+                   </button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div style="text-align: center">{$data->render()}</div>
+{include file="public/foot" /}
+<script>
+    //禁用/启用管理员
+    $('.chan_type').each(function(k,v){
+        $(v).click(function(){
+            $.post("{:url('chan_type')}",{type:$(v).attr('val'),uid:$(v).attr('uid')},function(re){
+                layer.msg(re.msg,{time:2000},function(){
+                    if(re.code=='0') location.reload();
+                });
+            })
+        })
+    })
+</script>

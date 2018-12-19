@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit">
+    <title>登录</title>
+    <link rel="stylesheet" href="ADMIN/css/base.css">
+    <link rel="stylesheet" href="EXT/layui/css/layui.css">
+<style>
+    body{ color:#333; font-size:13px;}
+    input,select,textarea{color:#333;}
+    .bg{ width:100%; height:100%; position:absolute; background:url(/static/admin/images/bg.jpg) }
+    .panel{background:#fff;}
+    form .form-group:last-child{padding-bottom:0;}
+    .passcode{position:absolute;right:0;bottom:0;height:32px;margin:1px;border-left:solid 1px #ddd;text-align:center;line-height:32px;border-radius:0 4px 4px 0;}
+    ul,li{ list-style-type:none;}
+
+    .field-icon-right .icon{ bottom:0px; top:auto}
+    .loginbox { background:url(/static/admin/images/tmbg-white.png); border:0px;width: 30em;margin: 0 auto}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="container">
+    <!--<div class="line bouncein"> 动态窗口效果-->
+    <div class="line">
+        <div class="xs6 xm4 xs3-move xm4-move">
+            <div style="height:150px;"></div>
+            <div class="media media-y margin-big-bottom">
+            </div>
+            <form id="loginform">
+                <div class="panel loginbox">
+                    <div class="text-center margin-big padding-big-top">
+                        <h1>后台管理中心</h1>
+                    </div>
+                    <div class="panel-body" style="padding:30px; padding-bottom:10px; padding-top:10px;">
+                        <div class="form-group">
+                            <div class="field field-icon-right">
+                                <input type="text" class="input input-big" name="name" id="name" placeholder="登录账号" />
+                                        <span class="icon  margin-small"> <i class="layui-icon">&#xe612;</i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="field field-icon-right">
+                                <input type="password" class="input input-big" name="pwd" id="pwd"  placeholder="登录密码" />
+                                <span class="icon  margin-small"> <i class="layui-icon">&#xe673;</i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="field">
+                                <input type="text" class="input input-big" name="verify" id="verify" placeholder="填写右侧的验证码" />
+                                <img src="{:url('verify')}" alt="" width="100" height="32" class="passcode" style="height:43px;cursor:pointer;" title="点击刷新验证码" onclick="javascript:this.src='{:url("verify")}?rand='+Math.random();">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:30px;">
+                        <input type="button" onclick="sub();" class="button button-block bg-main text-big input-big" value="登录">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+<script src="ADMIN/js/jquery-3.2.1.min.js"></script>
+<script src="ADMIN/layer/layer.js"></script>
+<script>
+    function sub(){
+        var name=$('#name').val(),pwd=$('#pwd').val(),verify=$('#verify').val();
+        if($.trim(name)=='' || $.trim(pwd)=='' || $.trim(verify)==''){
+            layer.msg('请输入完整信息',function(){});
+            return ;
+        }
+        $.post("{:url('index')}",$('#loginform').serialize(),function(re){
+            layer.msg(re.msg,{time:2000},function(){
+                if(re.code=='0'){
+                    location.href="{:url('admin/index/index')}";
+                }
+            });
+        })
+    }
+    //键盘回车事件
+    $("body").keydown(function() {
+        if (event.keyCode == "13") {
+            sub();
+        };
+    });
+</script>

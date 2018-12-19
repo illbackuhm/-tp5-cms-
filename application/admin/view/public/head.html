@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{$title}</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="ADMIN/css/bootstrap.css" />
+    <link rel="stylesheet" href="ADMIN/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="ADMIN/css/matrix-style.css" />
+    <link rel="stylesheet" href="ADMIN/css/matrix-media.css" />
+
+    <link href="ADMIN/font-awesome/css/font-awesome.css" rel="stylesheet" />
+</head>
+<style>
+    .content_body{
+        position: absolute;
+        background: none repeat scroll 0 0 #eeeeee;
+        top: 60px;padding: 1em 1em;
+        bottom: 0;
+        left: 220px;
+        right: 0;
+        overflow: auto;
+    }
+    caption .form-control{
+        width: 15em;
+    }
+</style>
+<body>
+<!-- 个人资料 -->
+<div class="modal fade" id="up_own" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">个人资料修改</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example bs-example-form" role="form">
+                    <div class="input-group">
+                        <span class="input-group-addon">账号</span>
+                        <input type="text" class="form-control" name="name" id="name_own" placeholder="账号（必填）" value="{$Think.session.user_info.name}">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">密码</span>
+                        <input type="password" class="form-control" name="pwd" id="pwd_own"  placeholder="新密码（选填）">
+                    </div>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-addon">确认密码</span>
+                        <input type="password" class="form-control" id="r_pwd_own"  placeholder="确认新密码">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary sub_up_own">提交更改</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+
+<!--Header-part-->
+<div id="header">
+    <h1><a href="dashboard.html">信息管理系统平台</a></h1>
+</div>
+<!--close-Header-part-->
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+    <ul class="nav" >
+        <li  class="dropdown" id="profile-messages"  >
+            <a title="" href="#" data-toggle="dropdown" data-target="#profile-messages" class="dropdown-toggle" style="color: #ffffff">
+                <i class="icon icon-user"></i>&nbsp;
+                <span class="text" >欢迎你，{$Think.session.user_info.name}</span>&nbsp;
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#" data-toggle="modal" data-target="#up_own"><i class="icon-user"></i> 个人资料</a></li>
+                <li class="divider"></li>
+                <li class="divider"></li>
+                <li><a href="{:url('Login/login_out')}"><i class="icon-key"></i> 退出系统</a></li>
+            </ul>
+        </li>
+        <li ><a title="清除前台缓存"  style="color: #fff;cursor: pointer" id="clean"><span class="text">&nbsp;清除前台缓存</span></a></li>
+        <li ><a title="" href="{:url('Login/login_out')}" style="color: #ffffff"><i class="icon icon-share-alt"></i> <span class="text" >&nbsp;退出系统</span></a></li>
+    </ul>
+</div>
+<!--close-top-Header-menu-->
+
+<!--start-top-serch-->
+<!--<div id="search">
+    <input type="text" placeholder="搜索..."/>
+    <button type="submit" class="tip-bottom" title="Search"><i class="icon-search icon-white"></i></button>
+</div>-->
+<!--close-top-serch-->
+
+<!--sidebar-menu-->
+<div id="sidebar" style="OVERFLOW-Y: auto; OVERFLOW-X:hidden;">
+    <ul>
+        <li class="submenu index active">
+            <a class="menu_a" ><i class="icon icon-home"></i> <span>系统首页</span></a>
+        </li>
+        {volist name='menu_tree' id='vol'}
+        <li class="submenu nav_{$vol.id}">
+            <a href="#">
+                <i class="icon icon-table"></i>
+                <span>{$vol.title}</span>
+            </a>
+            <ul>
+                {volist name='vol._child' id='v'}
+                <li><a class="menu_a nav_son"  pid="{$v['pid']}" url="{$v['name']}" href="{:url($v['name'])}"><i class="icon icon-caret-right"></i>{$v.title}</a></li>
+                {/volist}
+            </ul>
+        </li>
+        {/volist}
+       <!-- <li class="submenu">
+            <a href="#">
+                <i class="icon icon-th"></i>
+                <span>布局表格组件</span>
+                <span class="label label-important">6</span>
+            </a>
+            <ul>
+                <li><a class="menu_a" link="buttons.html"><i class="icon icon-caret-right"></i> 按钮 &amp; 图标</a></li>
+                <li><a class="menu_a" link="grid.html"><i class="icon icon-caret-right"></i>页面布局</a></li>
+                <li><a class="menu_a" link="tables.html"><i class="icon icon-caret-right"></i>表格</a></li>
+                <li><a class="menu_a" link="widgets.html"><i class="icon icon-caret-right"></i>插件</a></li>
+                <li><a class="menu_a" link="charts.html"><i class="icon icon-caret-right"></i>曲线图 &amp; 统计图</a></li>
+                <li><a class="menu_a" link="interface.html"><i class="icon icon-caret-right"></i>元素</a></li>
+            </ul>
+        </li>-->
+    </ul>
+</div>
+<!--sidebar-menu-->
+
+<!--main-container-part-->
+<div class="content_body">
+    <!--breadcrumbs-->
+    <div id="content-header">
+        <div id="breadcrumb">
+            <ol class="breadcrumb">
+            <li><a href="{:url('admin/index/index')}">系统首页</a></li>{$now_menu}
+            </ol>
+        </div>
+    </div>
